@@ -1,0 +1,101 @@
+-- Create Book Table
+CREATE TABLE IF NOT EXISTS BOOK (
+	ISBN CHAR(10) NOT NULL,
+	Title VARCHAR(30) NOT NULL,
+	Year CHAR(4) NOT NULL,
+	Price REAL NOT NULL,
+	Category VARCHAR(16) NOT NULL,
+	PublisherName VARCHAR(40) NOT NULL,
+	PRIMARY KEY (ISBN),
+	FOREIGN KEY (PublisherName)  REFERENCES Publisher (PublisherName)
+);
+
+-- Create Book Author
+	CREATE TABLE IF NOT EXISTS AUTHOR (
+	AuthorID CHAR(10) NOT NULL,
+	FirstName VARCHAR(30) NOT NULL,
+	MiddleName VARCHAR(30),
+	LastName	VARCHAR(30) NOT NULL,
+	PRIMARY KEY (AuthorID)
+);
+
+-- Create Book Publisher
+CREATE TABLE IF NOT EXISTS Publisher(
+	PublisherName  VARCHAR(40)    NOT NULL,
+ 	Phone                 CHAR(10)           NOT NULL,
+ 	Address              VARCHAR(50)    NOT NULL,
+	PRIMARY KEY(PublisherName)
+);
+
+-- Create Book Warehouse
+CREATE TABLE IF NOT EXISTS Warehouse(
+	Code                   CHAR(5)              NOT NULL,
+ 	Address              VARCHAR(50)      NOT NULL,
+ 	Phone                 CHAR(10)             NOT NULL,
+ 	PRIMARY KEY(Code)
+);
+
+
+-- Create Book Review
+CREATE TABLE IF NOT EXISTS Review(
+	UserID          Char(10)           NOT NULL,
+	ReviewID          Char(10)           NOT NULL,
+	ISBN CHAR(10) NOT NULL,
+	Rating    Decimal(2,1)     NOT NULL,
+	Text        VARCHAR(150),
+	Time      TIMESTAMP     NOT NULL,
+	PRIMARY KEY(ReviewID)
+);
+
+-- Create Book Customer
+CREATE TABLE IF NOT EXISTS CUSTOMER(
+	UserID CHAR(10) NOT NULL,
+	LastName VARCHAR(30) NOT NULL,
+	FirstName VARCHAR(30) NOT NULL,
+	Gender VARCHAR(10) NOT NULL,
+	Bdate DATE,
+	Phone VARCHAR(10) NOT NULL,
+	CustomerAddress VARCHAR(30) NOT NULL,
+	Email VARCHAR(30) NOT NULL,
+	IsMember BOOLEAN NOT NULL,
+	PRIMARY KEY(UserID)
+);
+
+-- Create Book Bookorder
+CREATE TABLE IF NOT EXISTS BOOKORDER(
+	OrderID CHAR(10) NOT NULL,
+	OrderTime TIMESTAMP NOT NULL,
+	OrderStatus VARCHAR(30) NOT NULL,
+	UserID CHAR(10) NOT NULL,
+	PRIMARY KEY(OrderID),
+	FOREIGN KEY(UserID) REFERENCES CUSTOMER(UserID)
+);
+
+-- Create Book Contains
+CREATE TABLE IF NOT EXISTS CONTAINS (
+	quantity	INT  NOT NULL, 
+	OrderID	CHAR(10),
+	ISBN	CHAR(10),
+  	PRIMARY KEY(OrderID,ISBN),
+	FOREIGN KEY(OrderID) REFERENCES BOOKORDER(OrderID),
+	FOREIGN KEY(ISBN) REFERENCES BOOK(ISBN)
+);
+
+-- Create Book Stores
+CREATE TABLE IF NOT EXISTS STORES (
+	quantity	INT  NOT NULL,
+	Code 	CHAR(10),
+	ISBN	CHAR(10),
+   	PRIMARY KEY(Code,ISBN),
+	FOREIGN KEY(Code) REFERENCES Warehouse(Code),
+	FOREIGN KEY(ISBN) REFERENCES BOOK(ISBN)
+);
+
+-- Create Book Writes
+CREATE TABLE IF NOT EXISTS WRITES  (
+	AuthorID	CHAR(10),
+	ISBN 	CHAR(10),
+   	PRIMARY KEY(AuthorID,ISBN),
+	FOREIGN KEY(AuthorID) REFERENCES Author(AuthorID),
+	FOREIGN KEY(ISBN) REFERENCES BOOK(ISBN)
+);

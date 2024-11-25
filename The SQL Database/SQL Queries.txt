@@ -1,0 +1,79 @@
+-- SQL Queries
+
+-- a.Find the titles of all books by Pratchett that cost less than $10
+SELECT Title
+FROM Book, WRITES,  Author
+WHERE Book.ISBN = WRITES.ISBN
+AND WRITES.AuthorID = Author.AuthorID
+AND LastName = 'Pratchett' 
+AND Price < 10; 
+
+-- b.Give all the titles and their dates of purchase made by a single customer (you choose how to designate the customer)
+SELECT Title, OrderTime 
+FROM BookOrder, Customer, Book, Contains
+WHERE Customer.UserID = '19827469' 
+AND BookOrder.UserID = Customer.UserID 
+AND Contains.OrderID = BookOrder.OrderID 
+AND Contains.ISBN = Book.ISBN;
+
+-- c.Find the titles and ISBNs for all books with less than 5 copies in stock
+SELECT Title, Book.ISBN
+FROM STORES, Book 
+Where Book.ISBN=STORES.ISBN
+GROUP BY Book.ISBN
+HAVING SUM(quantity) < 5;
+
+-- d.Give all the customers who purchased a book by Pratchett and the titles of Pratchett books they purchased
+SELECT Customer.LastName, Customer.FirstName, Title
+FROM Customer, BookOrder, Contains, Book, Writes, Author
+WHERE Customer.UserID = BookOrder.UserID
+AND BookOrder.OrderID = CONTAINS.OrderID
+AND Contains.ISBN = Book.ISBN
+AND Book.ISBN = Writes.ISBN
+AND Writes.AuthorID = Author.AuthorID
+AND Author.LastName = 'Pratchett';
+
+-- e.Find the total number of books purchased by a single customer (you choose how to designate the customer) 
+SELECT SUM(quantity)
+FROM CUSTOMER, BOOKORDER, BOOK, CONTAINS
+WHERE CUSTOMER.UserID = '19827469'
+AND BOOKORDER.UserID = CUSTOMER.UserID 
+AND CONTAINS.OrderID = BOOKORDER.OrderID 
+AND CONTAINS.ISBN = BOOK.ISBN;
+
+-- f.Find the customer who has purchased the most books and the total number of books they have purchased 
+SELECT LastName, FirstName, SUM(Quantity)
+		FROM Customer, BOOKORDER, Contains 
+		WHERE Customer.UserID = BOOKORDER.UserID 
+AND BOOKORDER.OrderID = Contains.OrderID
+GROUP BY BOOKORDER.UserID
+HAVING SUM(Quantity) = (
+SELECT MAX(mycount)
+FROM (
+	SELECT BOOKORDER.UserID, SUM(Quantity) AS mycount
+	FROM Customer, BOOKORDER, Contains 
+	WHERE Customer.UserID = BOOKORDER.UserID 
+	AND BOOKORDER.OrderID = Contains.OrderID
+	GROUP BY BOOKORDER.UserID)
+);
+
+-- g. find titles of all books below 100 dollars which author is Simon Benninga  
+SELECT Title
+FROM Author A, Writes W, Book B
+WHERE A.AuthorID = W.AuthorID
+AND W.ISBN = B.ISBN
+AND A.FirstName = 'Simon'
+AND A.LastName = 'Benninga'
+AND Price < 100;
+
+-- h. find  titles of all books published in 83 Lukken Alley  
+SELECT title
+FROM (Book JOIN Publisher ON Book.PublisherName =Publisher.PublisherName)
+WHERE Address ='83 Lukken Alley';
+
+-- i. find all books with rating greater than 4  
+SELECT Title
+FROM Book, Review
+WHERE Book.ISBN = Review.ISBN
+GROUP BY Review.ISBN
+HAVING AVG(Rating) > 4;

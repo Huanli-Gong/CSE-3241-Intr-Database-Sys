@@ -1,0 +1,47 @@
+-- Adding new books, publishers, authors and customers
+INSERT INTO Publisher (PublisherName, Phone, Address)
+VALUES ('OSU','6143740000','1900 CANNON DR');
+
+INSERT INTO Author (AuthorID, FirstName, MiddleName, LastName) 
+VALUES ('1231231233','Parker', NULL, 'Wiksell');
+
+INSERT INTO Book (ISBN, title, year, price, category, publishername) 
+VALUES ('1234567891', 'SQL from 0 to giveup', '2021','32.41', 'textbook', 'OSU');
+
+INSERT INTO WRITES (AuthorID,ISBN) 
+VALUES  ('1231231233','1234567891');
+
+INSERT INTO Customer (UserID, LastName, FirstName, Gender, Bdate, Phone, CustomerAddress, Email, IsMember) 
+VALUES ('9883084999','Dar','Tilt','Male','1968-07-30','999-860-4945','10 Porter Pass','dtilt0@sciencedaily.com','true');
+
+-- Removing books, publishers, authors and customers 
+DELETE FROM STORES
+WHERE ISBN = '1234567891';
+
+DELETE FROM CONTAINS
+WHERE ISBN = '1234567891';
+
+DELETE FROM Review
+WHERE ISBN = '1234567891';
+
+DELETE FROM Writes
+WHERE AuthorID = '1231231233'
+AND ISBN = '1234567891';
+
+DELETE FROM Book
+WHERE ISBN = '1234567891';
+
+DELETE FROM Author
+WHERE AuthorID = '1231231233';
+
+DELETE FROM Review
+WHERE UserID = '9883084308';
+
+DELETE FROM Bookorder
+WHERE UserID = '9883084308';
+
+DELETE FROM Customer
+WHERE UserID = '9883084308';
+
+DELETE FROM Publisher
+WHERE PublisherName = 'OSU';
